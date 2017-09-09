@@ -361,7 +361,7 @@ class SecNode {
                                 "queueDepth" : count,
                                 "lastChalBlock": addrBal.lastChalBlock,
                                 "lastExecSec": local.getItem('lastExecSec'),
-								"tls_cert_verified": ndata.tls_cert_verified
+				"tls_cert_verified": ndata.tls_cert_verified
                             }
                             console.log(stats)
                             console.log("lastchalblock="+local.getItem('lastChalBlock'))
@@ -375,7 +375,7 @@ class SecNode {
 
                         })
                     })
-				})
+		})
             })
             .catch(err => {
 
