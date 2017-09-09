@@ -346,6 +346,8 @@ class SecNode {
                         for (let op of ops) {
                             op.status == 'queued' ? count++ : null;
                         }
+						self.corerpc.getNetworkInfo()
+							.then((ndata) => {
 
                         self.getAddrWithBal((err, addrBal) => {
 
@@ -358,7 +360,8 @@ class SecNode {
                                 "isValidBal": addrBal.valid,
                                 "queueDepth" : count,
                                 "lastChalBlock": addrBal.lastChalBlock,
-                                "lastExecSec": local.getItem('lastExecSec')
+                                "lastExecSec": local.getItem('lastExecSec'),
+								"tls_cert_verified": ndata.tls_cert_verified
                             }
                             console.log(stats)
                             console.log("lastchalblock="+local.getItem('lastChalBlock'))
@@ -372,6 +375,7 @@ class SecNode {
 
                         })
                     })
+				})
             })
             .catch(err => {
 
