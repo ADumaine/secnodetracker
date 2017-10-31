@@ -15,10 +15,10 @@ const validator = (value) => {
 //IP type validator
 const ipvalidator = (value) => {
     if (value == 4) {
-	return value;
+        return value;
     }
     if (value == 6) {
-	return value;
+        return value;
     }
     else {
         throw new Error('The ip address format must be either 4 or 6.');
@@ -42,44 +42,45 @@ let msg5 = '(Default: ' + urlDefault + '):';
 //Prompt user for values 
 promptly
     .prompt('Staking transparent address' + msg1, { 'default': addr, 'validator': validator })
-    .then((value) => {
+    .then(value => {
 
         localStorage.setItem('stakeaddr', value);
 
-        promptly.prompt('Alert email address' + msg2, { 'default': email })
-            .then((value) => {
+        return promptly.prompt('Alert email address' + msg2, { 'default': email })
+    })
+    .then(value => {
 
-                localStorage.setItem('email', value);
+        localStorage.setItem('email', value);
 
-                promptly.prompt('Domain name used in cert - FQDN' + msg3, { 'default': fqdn })
-                    .then((value) => {
+        return promptly.prompt('Domain name used in cert - FQDN' + msg3, { 'default': fqdn })
+    })
+    .then(value => {
 
-                        localStorage.setItem('fqdn', value);
+        localStorage.setItem('fqdn', value);
 
-			            promptly.prompt('IP address version used for connection - 4 or 6' + msg4, { 'default': ipv , 'validator': ipvalidator })
-				            .then((value) => {
-					
-					            localStorage.setItem('ipv', value);
+        return promptly.prompt('IP address version used for connection - 4 or 6' + msg4, { 'default': ipv , 'validator': ipvalidator })
+    })
+    .then(value => {
 
-                        			promptly.prompt('Tracking Server url' + msg5, { 'default': urlDefault })
-                            				.then((value) => {
-							                //ipv6 check for correct server url
-							                if(ipv == 6){
-                                			localStorage.setItem('serverurl', 'http://[2600:3c02::f03c:91ff:fe3e:1669]');
-							                }
-							                else{
-							                localStorage.setItem('serverurl', value);
-							                }
+        localStorage.setItem('ipv', value);
 
+        return promptly.prompt('Tracking Server url' + msg5, { 'default': urlDefault })
 
-                                		getRPC();
+    })
+    .then(value => {
 
-                            		})
-                    		})
-            		})
-    		})
-	})
-    .catch((err) => {
+        //ipv6 check for correct server url
+        if(ipv == 6) {
+            localStorage.setItem('serverurl', 'http://[2600:3c02::f03c:91ff:fe3e:1669]');
+        }
+        else {
+            localStorage.setItem('serverurl', value);
+        }
+
+        getRPC();
+
+    })
+    .catch(err => {
         console.log('Error:', err.message);
     });
 
@@ -120,17 +121,17 @@ const getRPC = () => {
             let idx = line.indexOf("=");  //don't use split since user or pw could have =
             let key = line.substring(0, idx);
             let val = line.substring(idx + 1);
-	            if(key == 'rpcallowip'){
-	    	        if(localStorage.getItem('ipv') == 6){
+            if(key == 'rpcallowip'){
+                if(localStorage.getItem('ipv') == 6){
                     //if ipv6 leave rpcallowip blank to prevent errors
-	    		    localStorage.setItem(key, '');
-            		}
-	                else{
-            	    localStorage.setItem(key, val);
-	                }
-	            } else {
+                    localStorage.setItem(key, '');
+                }
+                else{
                     localStorage.setItem(key, val);
                 }
+            } else {
+                    localStorage.setItem(key, val);
+            }
         }
         if (line == 'testnet=1') testnet = true;
     });
@@ -141,5 +142,3 @@ const getRPC = () => {
     console.log("Setup Complete");
 
 }
-
-
